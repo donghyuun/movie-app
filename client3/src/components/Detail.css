@@ -1,0 +1,13 @@
+.detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 500px;
+    margin:auto;
+    text-align: center;
+}
+
+.detail img{
+    width: 350px;
+    margin:auto;
+}

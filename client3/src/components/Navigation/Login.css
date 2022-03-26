@@ -1,0 +1,14 @@
+.loginForm {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left:30%;
+    margin-right:30%;
+    height:100vh;
+  }
+.loginForm input{
+    height:20px;
+}
+.loginForm button{
+    height: 30px;
+}

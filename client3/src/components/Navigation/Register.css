@@ -1,0 +1,14 @@
+.registerForm {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left:30%;
+    margin-right:30%;
+    height:100vh;
+  }
+.registerForm input{
+    height:20px;
+}
+.registerForm button{
+    height: 30px;
+}

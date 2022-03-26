@@ -1,0 +1,11 @@
+.movie_data {
+  width: 300px;
+  padding:20px;
+}
+.movie_data img {
+  width: 300px;
+  border-radius: 10px;
+}
+.movie_data h1 {
+  height: 50px;
+}

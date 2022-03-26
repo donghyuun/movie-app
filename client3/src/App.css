@@ -1,0 +1,18 @@
+.total {
+  background-color: lightblue;
+}
+.form {
+  display: flex;
+  justify-content: center;
+  padding-top: 35px;
+}
+.movies {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: auto;
+}
+
+.input {
+  height: 20px;
+}
