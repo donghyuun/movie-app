@@ -20,12 +20,10 @@ function Login(props){
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        console.log(email, password);
         let body = {
             email,
             password
         }
-        
         dispatch(loginUser(body)).then((res) => {
             if(res.payload.loginSuccess){
                 navigate('/');
@@ -33,7 +31,7 @@ function Login(props){
                 window.location.reload();
                 //새로고침 버튼처럼 현재 리소스를 다시 불러온다
             }else{
-                alert("ERROR");
+                alert("로그인 실패");
             }
         })
     }

@@ -35,21 +35,38 @@ userSchema.methods.comparePassword = function(plainPassword, cb){
     })
 }
 
-userSchema.methods.generateToken = function(cb){
-    let user = this;
-    console.log(user);
-    var token = jwt.sign(user._id.toHexString(), 'secretToken')
+userSchema.pre('save', function(next){
+    var user = this;
+    //console.log(`위치(pre save), 회원가입 유저 정보: ${user}`);
+    if(user.isModified('password')){
+        bcrypt.genSalt(saltRounds, function(err, salt){
+            if(err){return next(err)}
     
+            bcrypt.hash(user.password, salt, function(err,hash){
+                if(err){return next(err)}
+                //비밀번호 hash된 비밀번호로 바꿈
+                user.password = hash
+                next()
+            })
+        })
+    }
+    next()
+})
+
+userSchema.methods.generateToken = function(cb){
+    var user = this;
+    var token = jwt.sign(user._id.toHexString(), 'secretToken')
+
     user.token = token
-    user.save(function(err, user){
+    console.log(user);
+    user.save(function(err, userInfo){
         if(err) return cb(err)
-        cb(null, user)
+        cb(null, userInfo)
     })
 }
 
 userSchema.statics.findByToken = function(token, cb){
     var user = this;
-
     //user._id + ' ' => token
     jwt.verify(token, 'secretToken', function(err, decoded){
         user.findOne({"_id": decoded, "token": token}, function(err, user){
@@ -58,5 +75,6 @@ userSchema.statics.findByToken = function(token, cb){
         })
     })
 }
+
 const User = mongoose.model('User', userSchema)
 module.exports = {User}

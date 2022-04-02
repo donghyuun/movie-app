@@ -17,6 +17,7 @@ export function registerUser(dataToSubmit) {
   const request = axios
     .post("/api/users/register", dataToSubmit)
     .then((res) => res.data);
+    //request = {success: true or false}
 
   return {
     type: REGISTER_USER,

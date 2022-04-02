@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import "./Register.css";
 import { useDispatch } from "react-redux";
 import { loginUser, registerUser } from "../../_actions/user_action";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Register(props){
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
@@ -33,18 +36,15 @@ function Register(props){
             console.log("okay")
         }
         let body = {
-            id: id,
+            email: email,
             password: password,
-            email: email
         }
-        console.log(`회원가입 정보: ${body}`);
-        
         dispatch(registerUser(body)).then((res)=>{
             if(res.payload.success){
-                props.history.push("/login");
+                navigate('/login')
                 //회원가입 완료 후 다시 로그인 페이지로
             }else{ 
-                alert("회원 가입 실패 ㅠㅠ")
+                alert("비밀번호는 최소 5자 이상입니다.")
             }
         })
     }
@@ -54,7 +54,7 @@ function Register(props){
             <form className="registerForm" onSubmit={onSubmitHandler}>
                 <h1>REGISTER</h1>
                 <label>Email</label>
-                <input type="text" value={id} onChange={onIdHandler}/>
+                <input type="text" value={email} onChange={onEmailHandler}/>
                 <label>Password</label>
                 <input type="text" value={password} onChange={onPassWordHandler}/>
                 <label>Confirm Password</label>

@@ -5,6 +5,7 @@ const bodyparser = require('body-parser');
 const URL = "..."
 const mongoose = require('mongoose');//mongoDB 사용
 const { User } = require('./models/User');
+const { Comment } = require('./models/Comment');
 const { auth } = require("./middleware/auth");
 const cookieParser = require("cookie-parser");
 const { reset } = require('nodemon');
@@ -19,19 +20,12 @@ mongoose.connect(URL,{
 .catch(err=>console.log(err))
 
 app.listen(port, ()=>{
-    console.log(`Serer is running on port ${port}`);
+    console.log(`Sever is running on port ${port}`);
 })
-//////////////////////////////////////////////////////////
-app.post('/api/users/register', (req,res) => {
-  const user = new User(req.body)
-  console.log(user);
-  user.save((err, userInfo) => {
-    if(err){return res.json({success:false, err})}
-    return res.status(200).json({ success:true })
-  })
-})
+
 //////////////////////////////////////////////////////////
 app.post('/api/users/login', (req, res) => {
+  //정상적으로 res받아지는거 확인!
   User.findOne({email:req.body.email}, (err, user) => {
   //유저 없으면
   if(!user){
@@ -44,8 +38,10 @@ app.post('/api/users/login', (req, res) => {
   //유저 있으면
   user.comparePassword(req.body.password, (err, isMatch)=>{
     //비밀번호 일치X
+    console.log(`password: ${req.body.password}, isMatch: ${isMatch}`)
     if(!isMatch) {return res.status(400).send(err)}
     
+    console.log("비밀번호 일치")
     //비밀번호 일치O
     user.generateToken((err, user) => {
       //토큰 생성시 오류 발생 O
@@ -79,6 +75,33 @@ app.get('/api/users/logout', auth, (req, res) => {
     })
   })//auth 미들웨어 이용
 }) 
+
+//////////////////////////////////////////////////////////
+app.post('/api/users/register', (req,res) => {
+  const user = new User(req.body)
+  user.save((err, userInfo) => {
+    if(err){return res.json({success: false, err})}
+    return res.status(200).json({ success:true })
+  })
+})
+//////////////////////////////////////////////////////////
+app.post('/api/comments/upload', auth, (req, res) => {
+  //comment객체에 comment, movieId 들어있음
+  console.log(req.user.name);
+})
+
+
+//post => "api/comments/upload", comment & movie id
+
+//post => "api/comments/get", movieId
+
+//post => "api/comments/delete", comment id
+
+//post => "api/comments/edit", content & comment id
+
+
+
+
 
 //root 디렉토리에 오면 hello world를 출력한다
 app.get('/api/hello', (req, res) => res.send('hello world'))
