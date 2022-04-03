@@ -29,25 +29,35 @@ const userSchema = mongoose.Schema({
 
 userSchema.methods.comparePassword = function(plainPassword, cb){
     //여기서 this는 email로 db에서 찾은 유저를 말함
+    console.log(`planPassword: ${plainPassword}, hashedPassword: ${this.password}`);
+    
     bcrypt.compare(plainPassword, this.password, function(err, isMatch){
         if(err){ return cb(err) }//에러 발생
+        console.log(`isMatch: ${isMatch}`);
         cb(null,isMatch)//isMatch => true or false
     })
+    /*
+    bcrypt.compare(plainPassword, this.password).then(function(result){console.log(result)})
+    */
 }
 
+userSchema.pre('save',async function (next) {
+    try {
+      if (!this.isModified('password')) return next();
+  
+      const hash = await bcrypt.hash(this.password, 10);
+      this.password = hash;
+  
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+)
+/*
 userSchema.pre('save', function(next){
+    console.log("save")
     var user = this;
-    bcrypt.genSalt(saltRounds, function(err, salt){
-        if(err){return next(err)}
-        bcrypt.hash(user.password, salt, function(err,hash){
-            if(err){return next(err)}
-            //비밀번호 hash된 비밀번호로 바꿈
-            user.password = hash
-            console.log(user.password)
-            next()
-        })
-    })
-    /*
     if(user.isModified('password')){
         bcrypt.genSalt(saltRounds, function(err, salt){
             if(err){return next(err)}
@@ -61,9 +71,8 @@ userSchema.pre('save', function(next){
         })
     }
     next()
-    */
 })
-
+*/
 userSchema.methods.generateToken = function(cb){
     var user = this;
     var token = jwt.sign(user._id.toHexString(), 'secretToken')

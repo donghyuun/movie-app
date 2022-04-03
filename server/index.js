@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 5000;
 const bodyparser = require('body-parser');
-const URL = "..."
+const URL = ""
 const mongoose = require('mongoose');//mongoDB 사용
 const { User } = require('./models/User');
 const { Comment } = require('./models/Comment');
@@ -22,24 +22,44 @@ mongoose.connect(URL,{
 app.listen(port, ()=>{
     console.log(`Sever is running on port ${port}`);
 })
+/////////////////////////////////////////////
+app.post("/api/comments/get",(req,res) => {
+  console.log(req.body.movieId);
+  Comment.find({movieId: req.body.movieId}, (err, commentList) => {
+    console.log(commentList);
+    if(!commentList){return res.json({
+      commentSuccess:false,
+      message: "해당 영화에 해당하는 댓글이 없습니다."
+    })}else{
+      let commentListArray = commentList;
+      res.json({
+        commentList: commentListArray,
+        commentSuccess: true
+      })
+    }
+  })
+})
 
 //////////////////////////////////////////////////////////
 app.post('/api/users/login', (req, res) => {
   //정상적으로 res받아지는거 확인!
+  console.log(req.body)
   User.findOne({email:req.body.email}, (err, user) => {
+    console.log(user)
   //유저 없으면
   if(!user){
+    console.log("유저없음")
     return res.json({
       loginSuccess:false,
       message: "제공된 이메일에 해당하는 유저가 없습니다."
     })
   }
-
-  //유저 있으면
+  
+  //유저 있으면, 여기까지 정상
   user.comparePassword(req.body.password, (err, isMatch)=>{
     //비밀번호 일치X
     console.log(`password: ${req.body.password}, isMatch: ${isMatch}`)
-    if(!isMatch) {return res.status(400).send(err)}
+    if(!isMatch){ return res.json({loginSuccess: false, message: "비밀번호가 틀렸습니다"})}
     
     console.log("비밀번호 일치")
     //비밀번호 일치O
@@ -69,6 +89,7 @@ app.get('/api/users/auth', auth, (req, res) => {
 
 app.get('/api/users/logout', auth, (req, res) => {
   User.findOneAndUpdate({_id: req.user._id}, {token: ""}, (err, user) => {//내장함수
+    console.log(`로그아웃 대상: ${user}`)
     if(err) return res.json({success: false, err});
     return res.status(200).send({
       success:true
@@ -89,14 +110,13 @@ app.post('/api/users/register', (req,res) => {
 //////////////////////////////////////////////////////////
 app.post('/api/comments/upload', auth, (req, res) => {
   //comment객체에 comment, movieId 들어있음
-  const comment = new Comment(req.body);
+  const comment = new Comment(req.body)
   comment.save((err, commentInfo) => {
     console.log(`commentInfo=${commentInfo}`);
-    if(err){return res.json({success: false, err})}
-    return res.status(200).json({ success:true })
+    if(err){return res.json({addSuccess: false, err})}
+    return res.status(200).json({ addSuccess:true })
   })
 })
-
 
 //post => "api/comments/upload", comment & movie id
 

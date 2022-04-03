@@ -1,11 +1,13 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import './Detail.css';
-import Comment from "./comment/Comment";
+import CommentList from "./comment/CommentList";
+import axios from "axios";
 
 function Detail(){
     const location = useLocation();
     const state = location.state;
+    const authData = axios.get("/api/users/auth")
     return(
         <div className="detail">
             <div className="movieInfo">
@@ -15,7 +17,7 @@ function Detail(){
                 <img alt="" src={state.poster}/>
                 <p>{state.summary}</p>
             </div>
-            <Comment className="comment" key={state.id} movieId={state.id} ></Comment>
+            <CommentList className="comment"  movieId={state.id} ></CommentList>
         </div>
     )
 }

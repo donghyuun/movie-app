@@ -2,6 +2,7 @@ import { ADD_COMMENT } from "./types";
 import axios from "axios";
 
 export function addComment(dataToSubmit){
+    console.log(dataToSubmit);
     const request = axios
     .post("/api/comments/upload", dataToSubmit)
     .then((res) => res.data);

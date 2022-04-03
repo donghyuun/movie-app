@@ -6,7 +6,8 @@ const commentSchema = mongoose.Schema({
     createAt: {
         type: Date,
         default: Date.now,
-    }
+    },
+    movieId: String
 })
 
 const Comment = mongoose.model('Comment', commentSchema);

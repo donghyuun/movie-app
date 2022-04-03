@@ -1,11 +1,16 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch} from "react-redux"
 import axios from "axios";
 import { addComment } from "../../_actions/comment_action";
 
-function CommentForm(props) {//해당 movieId를 props로 받아옴
+function CommentForm({movieId}) {//해당 movieId를 props로 받아옴
     const dispatch = useDispatch();
     const [comment, setComment] = useState([])
+    const [name, setName] = useState("")
+   
+    axios.get("/api/users/auth").then((res) => {
+        setName(res.data.name);
+    })
 
     const onCommentHandler = (e) => {
         setComment(e.target.value);
@@ -14,12 +19,17 @@ function CommentForm(props) {//해당 movieId를 props로 받아옴
     const onSubmit = (event) => {
         event.preventDefault();
         let body = {
+        name: name,
         comment: comment,
-        movieId: props.movieId
+        movieId: movieId
         };
+
         dispatch(addComment(body)).then((res) => {
             if(!res.payload.addSuccess){
                 alert("댓글 입력 실패")
+            }else{
+                alert("댓글이 입력되었습니다.")
+                window.location.reload();
             }
         })
     };
