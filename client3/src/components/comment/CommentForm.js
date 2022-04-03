@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
+import {useDispatch} from "react-redux"
 import axios from "axios";
 import { addComment } from "../../_actions/comment_action";
 
 function CommentForm(props) {//해당 movieId를 props로 받아옴
- 
+    const dispatch = useDispatch();
     const [comment, setComment] = useState([])
 
     const onCommentHandler = (e) => {
@@ -17,11 +18,10 @@ function CommentForm(props) {//해당 movieId를 props로 받아옴
         movieId: props.movieId
         };
         dispatch(addComment(body)).then((res) => {
-            if(!res.payload.success){
+            if(!res.payload.addSuccess){
                 alert("댓글 입력 실패")
             }
         })
-       
     };
     
     //댓글 등록

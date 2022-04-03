@@ -79,7 +79,9 @@ app.get('/api/users/logout', auth, (req, res) => {
 //////////////////////////////////////////////////////////
 app.post('/api/users/register', (req,res) => {
   const user = new User(req.body)
+  console.log(user)
   user.save((err, userInfo) => {
+    console.log(`userInfo=${userInfo}`);
     if(err){return res.json({success: false, err})}
     return res.status(200).json({ success:true })
   })
@@ -87,7 +89,12 @@ app.post('/api/users/register', (req,res) => {
 //////////////////////////////////////////////////////////
 app.post('/api/comments/upload', auth, (req, res) => {
   //comment객체에 comment, movieId 들어있음
-  console.log(req.user.name);
+  const comment = new Comment(req.body);
+  comment.save((err, commentInfo) => {
+    console.log(`commentInfo=${commentInfo}`);
+    if(err){return res.json({success: false, err})}
+    return res.status(200).json({ success:true })
+  })
 })
 
 

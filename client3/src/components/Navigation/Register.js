@@ -9,13 +9,13 @@ function Register(props){
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [id, setId] = useState("");
+    const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const [confirmpassword, setConfirmPassword] = useState("");
 
-    const onIdHandler = (e) => {
-        setId(e.target.value);
+    const onNameHandler = (e) => {
+        setName(e.target.value);
     }
     const onPassWordHandler = (e) => {
         setPassword(e.target.value);
@@ -36,9 +36,11 @@ function Register(props){
             console.log("okay")
         }
         let body = {
-            email: email,
+            name: name,
             password: password,
+            email: email
         }
+        console.log(`body=${body.name}`)
         dispatch(registerUser(body)).then((res)=>{
             if(res.payload.success){
                 navigate('/login')
@@ -53,6 +55,8 @@ function Register(props){
         <div>
             <form className="registerForm" onSubmit={onSubmitHandler}>
                 <h1>REGISTER</h1>
+                <label>Name</label>
+                <input type="text" value={name} onChange={onNameHandler}/>
                 <label>Email</label>
                 <input type="text" value={email} onChange={onEmailHandler}/>
                 <label>Password</label>

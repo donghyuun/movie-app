@@ -37,20 +37,31 @@ userSchema.methods.comparePassword = function(plainPassword, cb){
 
 userSchema.pre('save', function(next){
     var user = this;
-    //console.log(`위치(pre save), 회원가입 유저 정보: ${user}`);
+    bcrypt.genSalt(saltRounds, function(err, salt){
+        if(err){return next(err)}
+        bcrypt.hash(user.password, salt, function(err,hash){
+            if(err){return next(err)}
+            //비밀번호 hash된 비밀번호로 바꿈
+            user.password = hash
+            console.log(user.password)
+            next()
+        })
+    })
+    /*
     if(user.isModified('password')){
         bcrypt.genSalt(saltRounds, function(err, salt){
             if(err){return next(err)}
-    
             bcrypt.hash(user.password, salt, function(err,hash){
                 if(err){return next(err)}
                 //비밀번호 hash된 비밀번호로 바꿈
                 user.password = hash
+                console.log(user.password)
                 next()
             })
         })
     }
     next()
+    */
 })
 
 userSchema.methods.generateToken = function(cb){
