@@ -10,6 +10,7 @@ import Login from "./components/Navigation/Login";
 import Register from "./components/Navigation/Register";
 import axios from "axios";
 import Auth from "./hoc아직안씀/auth"
+import Image from "./components/Navigation/Image";
 
 function App() {
   const [auth, setauth] = useState(false);
@@ -29,6 +30,7 @@ function App() {
           <Route path="/movie/:id" element={<Detail/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/signup" element={<Register/>} />
+          <Route path="/image" element={<Image />} />
         </Routes>
       </div>
     </div>

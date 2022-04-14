@@ -24,6 +24,7 @@ function Navigation({auth}){
                 <Link to="/">Home</Link>
                 <Link to="/about">About</Link>
                 <a href="/api/users/logout" onClick={onLogoutHandler}>Logout</a>
+                <Link to="/image">Image</Link>
             </div> 
           </div>
         );
@@ -35,6 +36,7 @@ function Navigation({auth}){
                 <Link to="/about">About</Link>
                 <Link to="/login">Login</Link>
                 <Link to="/signup">SignUp</Link>
+                <Link to="/image">Image</Link>
             </div> 
         </div>
       )

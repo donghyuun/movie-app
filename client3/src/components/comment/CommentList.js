@@ -10,9 +10,10 @@ function CommentList({ movieId }) {
 
   //db에 저장되어 있는 movieId에 해당하는 댓글들을 불러와서 commentList에 저장
   
+
   useEffect(() => {
     const request = axios.post("/api/comments/get", { movieId }).then(res => res.data.commentList);
-
+    
     (async()=>{ let result = await request; 
     setcommentList(result)})()
   }, []);

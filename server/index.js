@@ -2,19 +2,21 @@ const express = require('express')
 const app = express()
 const port = 5000;
 const bodyparser = require('body-parser');
-const URL = ""
+const db = require('./config/key');
 const mongoose = require('mongoose');//mongoDB 사용
 const { User } = require('./models/User');
 const { Comment } = require('./models/Comment');
 const { auth } = require("./middleware/auth");
 const cookieParser = require("cookie-parser");
 const { reset } = require('nodemon');
+const { Blog } = require('./models/Blog');
+const multer = require('multer');
 
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(bodyparser.json());
 app.use(cookieParser());
 
-mongoose.connect(URL,{
+mongoose.connect(db.mongoURI,{
     useUnifiedTopology: true})
 .then(()=>console.log('MongoDB Connected...'))
 .catch(err=>console.log(err))
@@ -117,6 +119,51 @@ app.post('/api/comments/upload', auth, (req, res) => {
     return res.status(200).json({ addSuccess:true })
   })
 })
+/////////////////////////////////////////////////////////
+const storage = multer.diskStorage(({
+  //destination for files
+  destination: function(req, file, cb){
+    cb(null, './uploads/images')
+  },
+
+  filename: function(req, file, cb){
+    cb(null, `${Date.now()}__ ${file.originalname}`)
+  }
+}))
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fieldSize: 1024 * 1024 * 3
+  }
+})
+
+let originalname = "";
+
+app.post('/api/image', auth, upload.single('image'), (req, res) => {//upload.single의 image는 input의 name 과 동일
+  console.log(req.file)
+
+  originalname = req.file.originalname
+  
+  return res.json({success:true, url: res.req.file.path, fileName: res.req.file.filename})
+})
+app.post('/api/image/info', auth, (req,res)=>{
+
+  const body = {
+    title: req.body.title,
+    author: req.body.author,
+    description: req.body.description,
+    name: req.user.name,
+    img: originalname,
+    option: req.body.option
+  }
+  const blog = Blog(body);
+
+  blog.save((err, blogInfo)=> {
+    console.log(`blogInfo=${blogInfo}`);
+  })
+
+})
 
 //post => "api/comments/upload", comment & movie id
 
@@ -125,8 +172,6 @@ app.post('/api/comments/upload', auth, (req, res) => {
 //post => "api/comments/delete", comment id
 
 //post => "api/comments/edit", content & comment id
-
-
 
 
 

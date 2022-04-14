@@ -8,7 +8,7 @@ function Home(){
     const [text, setText] = useState(undefined||"");
 
     const getMovies = async () => {
-    const {data: {data : {movies}}} = 
+    const {data: {data : {movies}}} =
     await axios.get("https://yts.mx/api/v2/list_movies.json");
     setMovies({movies});
       //setLoading({loading: true})
